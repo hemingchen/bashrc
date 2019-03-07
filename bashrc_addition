@@ -1,0 +1,54 @@
+#############################################
+# Added by Heming
+#############################################
+# Replace default terminal app with terminator
+if ps -o cmd= -p $(ps -o ppid= -p $$) | grep -q gnome; then
+  nohup terminator &> /dev/null &
+  sleep 0.1s
+  exit
+fi
+
+# CUDA
+export PATH=/usr/local/cuda-9.0/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
+
+while true
+do
+
+# Tensorflow object detection api
+export PYTHONPATH=$PYTHONPATH:/home/$USER/tensorflow/models/research:/home/$USER/tensorflow/models/research/slim
+
+# Allow for ROS source choice
+read -p "Do you want to source ROS in this workspace (y/n): " input_choice
+
+if [ "$input_choice" = "y" ]
+then
+  echo "ROS sourced!"
+  # Source ROS
+  source /opt/ros/melodic/setup.bash
+  # Change ROS editor to nano
+  export EDITOR='nano -w'
+  # Set up ROS ip
+  export ROS_IP=`echo $(hostname -I)`
+  ########################################################################################
+  # If you want to source your setup bash in your catkin workspace, uncomment the line below
+  source ~/catkin_ws/devel/setup.bash
+  ########################################################################################
+  # Add other ROS statements here or uncomment the relevant ones below
+  # export GAZEBO_MODEL_PATH=~/catkin_ws/src/sensor_stick/models
+  # export GAZEBO_MODEL_PATH=~/catkin_ws/src/RoboND-Kinematics-Project/kuka_arm/models
+  ########################################################################################
+  break
+elif [ "$input_choice" = "n" ]
+then
+  echo "ROS *NOT* sourced!"
+  # Setup conda if NOT working with ROS
+  export PATH="/home/$USER/anaconda2/bin:$PATH"
+  break
+else
+  echo "Warning: Not an acceptable option. Choose (y/n).
+          "
+fi
+
+done
+
