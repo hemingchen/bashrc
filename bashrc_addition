@@ -12,11 +12,13 @@ fi
 export PATH=/usr/local/cuda-9.0/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
 
-while true
-do
-
 # Tensorflow object detection api
 export PYTHONPATH=$PYTHONPATH:/home/$USER/tensorflow/models/research:/home/$USER/tensorflow/models/research/slim
+
+############################
+# ROS related setup begins
+while true
+do
 
 # Allow for ROS source choice
 read -p "Do you want to source ROS in this workspace (y/n): " input_choice
@@ -42,7 +44,7 @@ then
 elif [ "$input_choice" = "n" ]
 then
   echo "ROS *NOT* sourced!"
-  # Setup conda if NOT working with ROS
+  # Source conda only if NOT working with ROS, ROS will be using OS default python env
   export PATH="/home/$USER/anaconda2/bin:$PATH"
   break
 else
@@ -51,4 +53,5 @@ else
 fi
 
 done
-
+# ROS related setup ends
+############################
